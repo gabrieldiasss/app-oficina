@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Model de exemplo para validar a primeira migration. Substitua pelo domínio da oficina.
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  createdAt DateTime @default(now())
+}
