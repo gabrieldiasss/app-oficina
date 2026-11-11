@@ -3,7 +3,7 @@ import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql";
 @ObjectType()
 export class ClienteModel {
   @Field(() => ID)
-  id!: string;
+  id!: number;
 
   @Field(() => String)
   name!: string;

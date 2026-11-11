@@ -7,9 +7,10 @@ import { ClientService } from "../services/client.service.js";
 export class ClientResolver {
   private clientService = new ClientService();
 
-  @Query(() => [ClienteModel])
-  async clients(): Promise<ClienteModel[]> {
-    return this.clientService.findAll();
+  // O GraphQL exige ao menos uma Query no schema.
+  @Query(() => String)
+  health(): string {
+    return "ok";
   }
 
   @Mutation(() => ClienteModel)
