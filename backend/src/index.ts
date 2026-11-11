@@ -1,33 +1,28 @@
+import "reflect-metadata";
 import express from "express";
-import { createHandler } from "graphql-http/lib/use/express";
-import { buildSchema } from "graphql";
+import cors from "cors";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@as-integrations/express5";
+import { buildSchema } from "type-graphql";
+import { ClientResolver } from "./resolver/client.resolver.js";
 
-// Construct a schema using GraphQL schema language
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+async function bootstrap() {
+  const schema = await buildSchema({
+    resolvers: [ClientResolver],
+    validate: false,
+  });
 
-// The root provides a resolver function for each API endpoint
-const root = {
-  hello() {
-    return "Hello world!";
-  },
-};
+  const server = new ApolloServer({ schema });
+  await server.start();
 
-const app = express();
+  const app = express();
 
-// Create and use the GraphQL handler
-app.all(
-  "/graphql",
-  createHandler({
-    schema,
-    rootValue: root,
-  }),
-);
+  // Em desenvolvimento o Apollo Server exibe o Apollo Sandbox em GET /graphql
+  app.use("/graphql", cors(), express.json(), expressMiddleware(server));
 
-// Start the server at port 4000
-app.listen(4000, () => {
-  console.log("Running a GraphQL API server at http://localhost:4000/graphql");
-});
+  app.listen(4000, () => {
+    console.log("GraphQL server em http://localhost:4000/graphql");
+  });
+}
+
+bootstrap();
